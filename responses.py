@@ -15,7 +15,7 @@ def get_response(user_input: str) -> str:
         board = []
         runs = 10000
         h = 'hero:'
-        v = 'villian:'
+        v = 'villain:'
         b = 'board:'
         r = 'runs'
         #The current bug is that if you have less than 2 hole cards inputted or less than 5 board cards, the next chars 
