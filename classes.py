@@ -114,7 +114,7 @@ def winner(hand1, hand2):
     answer = [-1, hand1]
     return answer
 
-def equity(hero=[], villian=[], board=[], runs=10000, print=False):
+def equity(hero=[], villian=[], board=[], runs=1000, print=False):
     result = 0
     herowins = 0
     villianwins = 0
