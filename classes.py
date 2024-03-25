@@ -3,7 +3,7 @@ import time
 from itertools import combinations
 
 suits = ['c', 's', 'h', 'd']
-ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 't', 'j', 'q', 'k', 'a']
 showdown_ranks = {1: "High Card", 2 : "One Pair", 3 : "Two Pair", 4 : "Three of a Kind", 5 : "Straight", 6: "Flush", 7 : "Full House", 8 : "Quads", 9 : "Straight Flush"}
 
 class Deck:
@@ -57,9 +57,9 @@ class Deck:
                 self.cards.remove(card)
 
 def evaluate(cards, deck):
-    card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+    card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 't': 10, 'j': 11, 'q': 12, 'k': 13, 'a': 14}
     rev_values = {value: key for key, value in card_values.items()}
-    rev_values[1] = 'A'
+    rev_values[1] = 'a'
     flush = len({card[-1] for card in cards}) == 1
     straight = False
     ranks = {card_values[card[:-1]] for card in cards}
@@ -172,6 +172,7 @@ def equity(hero=[], villian=[], board=[], runs=10000, print=False):
     if not print:
         return [round(100*(herowins/runs), 2), round(100*(villianwins/runs), 2), round(100*(ties/runs), 2)]
     
+    #add formatting to capitalize face cards tens and aces before returning
     return (f"\n\
         Results:\n\
         Board: {' '.join(board) if board != [] else '?????'}\n\

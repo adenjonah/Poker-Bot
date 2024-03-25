@@ -62,7 +62,7 @@ def paying(game: Game, content) -> str:
         game.player_paid(player)
     return game.gamestatus()
 
-def get_response(user_input: str, username: str, games: dict) -> str:
+def get_response(user_input: str, username: str, games: dict=None) -> str:
     tokens = user_input.split(' ')
     command = tokens[0]
     content = tokens[1:]
@@ -72,32 +72,24 @@ def get_response(user_input: str, username: str, games: dict) -> str:
     elif command == 'hello':
         return 'Hey'
     elif command == 'equity':
-        #logic broken
         evalinput = command[6:]
         hero = []
-        villian = []
+        villain = []
         board = []
         runs = 10000
-        h = 'hero:'
-        v = 'villain:'
-        b = 'board:'
-        r = 'runs'
-        #The current bug is that if you have less than 2 hole cards inputted or less than 5 board cards, the next chars 
-        #are passed in. finding a better way to delimit will solve this problem.
-        if h in evalinput:
-            hh = evalinput[evalinput.find(h) + len(h) : evalinput.find(h) + len(h) + 4]
-            hero = [hh[i].upper() + hh[i+1:i+2] for i in range(0, len(hh), 2)]
-        if v in evalinput:
-            vh = evalinput[evalinput.find(v) + len(v) : evalinput.find(v) + len(v) + 4]
-            villian = [vh[i].upper() + vh[i+1:i+2] for i in range(0, len(vh), 2)]
-        if b in evalinput:
-            bi = evalinput[evalinput.find(b) + len(b) : evalinput.find(b) + len(b) + 10]
-            board = [bi[i].upper() + bi[i+1:i+2] for i in range(0, len(bi), 2)]
-        if r in evalinput:
-            runs = evalinput[evalinput.find(r) + len(r) : evalinput.find(r) + len(r) + 2]#This wont work
-        print(f'Hero hand: {hero}')
-        return equity(hero, villian, board, runs, print=True)
-    
+        print(content)
+        for item in content:
+            if item.startswith('hero:'):
+                hero = [item.replace('hero:', '')[i:i+2] for i in range(0, len(item.replace('hero:', '')), 2)]
+            elif item.startswith('villain:'):
+                villain = [item.replace('villain:', '')[i:i+2] for i in range(0, len(item.replace('villain:', '')), 2)]
+            elif item.startswith('board:'):
+                board = [item.replace('board:', '')[i:i+2] for i in range(0, len(item.replace('board:', '')), 2)]
+            elif item.startswith('runs:'):
+                runs = int(item.replace('runs:', ''))
+        print(f'h: {hero}, v: {villain}, b: {board} r: {runs}')
+        return equity(hero, villain, board, runs, print=True)
+       
     elif command == 'startgame':
         #create a game under the user profile
         games[username] = Game(username)
@@ -135,35 +127,11 @@ def get_response(user_input: str, username: str, games: dict) -> str:
 
     raise NotImplementedError(f"missing code for command '{command}' with prefix '{command[:7]}'")
 
-games = {}
+
 if __name__ == '__main__':
-    print(get_response('startgame brian30 maokong50', 'adenj', games))
-    print(get_response('add jonah50 josh20 harrison80', 'adenj', games))
-    print(get_response('startgame brian30 maokong50', 'oliver', games))
-    print(get_response('add 50 rachel naomi', 'adenj', games))
-    print(get_response('add 50 jonah josh harrison', 'oliver', games))
+    games = {}
+    print(get_response('equity heroAsAd villain7sAc runs100', 'adenj'))
+    print(get_response('equity heroAsAd villain7sAc boardAh7c7h7d2d runs100', 'adenj'))
 
-    print(get_response('cashout brian0 maokong80 jonah26.7', 'oliver', games))
-
-    print(get_response('startgame bob50 ed50', 'josh', games))
-    print(get_response('cashout bob25', 'josh', games))
-    print(get_response('rebuy bob25', 'josh', games))
-    print(get_response('paid brian', 'oliver', games))
-
-'''
-!startgame 20 jonah harrison andrew
-
-!add eric40 brian50 sean20
-
-!rebuy andrew300
-
-!rebuy 50 jonah harrison
-
-!cashout sean150 eric0
-
-!paid sean eric
-
-!cashout jonah90 harrison150 andrew80 brian100
-'''
 
     
