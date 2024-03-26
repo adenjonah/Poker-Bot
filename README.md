@@ -8,6 +8,7 @@
 - [Installation for Development](#installation-for-development)
 - [Codebase Structure](#codebase-structure)
 - [Contributing](#contributing)
+  - [Future Development Prospects](#future-development-prospects)
 - [Contact](#contact)  
 
 ## Overview
@@ -63,7 +64,12 @@ To use the Poker-Bot in your Discord server, invite the bot to your server and e
 - `equity_tests.py`: Contains unit tests for the equity calculation functionality.
 
 ## Contributing
-We welcome contributions from the community. If you'd like to contribute, please fork the repository and submit a pull request with your changes.
-
+I plan on optimizing the current features and adding new ones. If you'd like to contribute, please fork the repository and submit a pull request with your changes.
+### Future Development Prospects
+- Optimizing hand evaluation by implementing CactusKev's evaluation process
+- Adding equity computation for PLO, DBBPPLO, Lowball, Red River
+- User bankroll tracker using a database
+- Basic hand history analyzer that takes a hand history and returns a classification (suckout, bad beat, cooler, nit fold)
+- Heads-Up NLH Solver using CFRM
 ## Contact
 For support or inquiries, please open an issue on the GitHub repository or reachout to me via email.
