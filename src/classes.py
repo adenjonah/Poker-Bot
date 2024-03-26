@@ -7,59 +7,60 @@ ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 't', 'j', 'q', 'k', 'a']
 showdown_ranks = {1: "High Card", 2 : "One Pair", 3 : "Two Pair", 4 : "Three of a Kind", 5 : "Straight", 6: "Flush", 7 : "Full House", 8 : "Quads", 9 : "Straight Flush"}
 
 class Deck:
-    cards = []
-    used = []
-
     def __init__(self):
-        self.cards.clear()
-        self.used.clear()
-        for suit in suits:
-            for rank in ranks:
-                card = rank + suit
-                self.cards.append(card)
+        # Initialize the deck of cards; this creates a new, full deck ready for use.
+        # The 'cards' list contains all cards in the deck, and 'used' contains cards that have been drawn.
+        self.cards = [rank + suit for suit in suits for rank in ranks]
+        self.used = []
 
     def __str__(self):
-        return f"{self.cards}"
+        # Provide a string representation of the current state of the deck, showing remaining and used cards.
+        return f"Cards in deck: {self.cards}\nUsed cards: {self.used}"
     
     def shuffle(self, shuffles=1):
+        # Shuffle the deck, combining used and remaining cards, then randomizing the order.
+        # The 'shuffles' parameter indicates how many times the deck should be shuffled.
         self.cards += self.used
-        self.used = []
+        self.used.clear()
         for i in range(shuffles):
             random.shuffle(self.cards)
 
     def count(self):
-        return len(self.cards)
+        # Return the total number of cards in the deck, including both used and remaining cards.
+        return len(self.cards) + len(self.used)
     
-    def hascards(self, num=1):
-        return (num <= (len(self.cards) - len(self.used)))
+    def has_cards(self, num=1):
+        # Check if there are enough remaining cards in the deck for a given number 'num'.
+        return num <= (len(self.cards) - len(self.used))
     
     def draw(self, num=1):
-        if(num <= 0):
+        # Draw 'num' number of cards from the deck, removing them from the remaining cards,
+        # and adding them to the used cards list. Raises an error if there aren’t enough cards to draw.
+        if num <= 0:
             raise ValueError("Must draw at least 1 card")
-        if(not self.hascards(num)):
+        if not self.has_cards(num):
             raise ValueError("Not enough cards in deck")
-
-        drawn = []
-        for i in range(num):
-            card = self.cards.pop()
-            drawn.append(card)
-            self.used.append(card)
+        drawn = [self.cards.pop() for _ in range(num)]
+        self.used.extend(drawn)
         return drawn
     
     def reset(self):
+        # Reset the deck to its original state, with all cards being available to draw again.
         self.__init__()
     
-    def takeout(self, removals=[]):
-        if(not self.hascards(len(removals))):
-           raise ValueError("Not enough cards in deck")
-        if(len(removals) != 0):
-            for card in removals:
-                self.cards.remove(card)
+    def takeout(self, removals=None):
+        # Remove specific cards from the deck, typically used to simulate specific scenarios or hands.
+        # 'removals' is a list of cards to be removed from the deck.
+        if removals is None:
+            removals = []
+        if not self.has_cards(len(removals)):
+            raise ValueError("Not enough cards in deck")
+        for card in removals:
+            self.cards.remove(card)
 
 def evaluate(cards, deck):
     card_values = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 't': 10, 'j': 11, 'q': 12, 'k': 13, 'a': 14}
-    rev_values = {value: key for key, value in card_values.items()}
-    rev_values[1] = 'a'
+    
     flush = len({card[-1] for card in cards}) == 1
     straight = False
     ranks = {card_values[card[:-1]] for card in cards}
@@ -103,6 +104,7 @@ def evaluate(cards, deck):
     raise ValueError(f'Cards in the hand are not possible: {cards}')
 
 def winner(hand1, hand2):
+    #Compares two hand rankings, starting with the hand rank and then kickers if they are tied
     answer = [0,0]
     for elem1, elem2 in zip(hand1, hand2):
         if elem1 > elem2:
@@ -114,19 +116,30 @@ def winner(hand1, hand2):
     answer = [-1, hand1]
     return answer
 
+def format_card(card):
+    #Makes face cards, aces, and 10s uppercase before returning
+    face_cards = {'t': 'T', 'j': 'J', 'q': 'Q', 'k': 'K', 'a': 'A'}
+    return face_cards.get(card[0], card[0].upper()) + card[1]
+
+def get_formatted_cards(cards):
+    #Makes a string of formatted cards
+    return ' '.join([format_card(card) for card in cards])
+
+
 def equity(hero=[], villian=[], board=[], runs=1000, print=False):
+    #Calculates and returns probability of wins and ties for 2 player NLH
     result = 0
     herowins = 0
     villianwins = 0
-    
     ties = 0
+
+    #Initializes a deck and removes inputted cards from the deck
     deck = Deck()
     deck.takeout(hero + villian + board)
     try:
         for run in range(runs):
             herohand = []
             vilhand = []
-            
             heromax = []
             vilmax = []
 
@@ -136,6 +149,7 @@ def equity(hero=[], villian=[], board=[], runs=1000, print=False):
             vilhand = villian.copy()
             boardinstance = board.copy()
 
+            #Fills hands until each player has 2 cards and the board has 5 cards
             while len(herohand) < 2:
                 herohand.append(deck.draw()[0])
             while len(vilhand) < 2:
@@ -143,18 +157,18 @@ def equity(hero=[], villian=[], board=[], runs=1000, print=False):
             while len(boardinstance) < 5:
                 boardinstance.append(deck.draw()[0])
 
+            #Created a list of all combinations of 5 cards from the 7 cards inputted
             herohand = list(combinations(herohand + boardinstance, 5))
-
             vilhand = list(combinations(vilhand + boardinstance, 5))
 
+            #Finds the hero and villains best hands
             heromax = [0, 0]
             for cards in herohand:
                 heromax = winner(heromax, evaluate(cards, deck))[1]
-
             vilmax = [0, 0]
             for cards in vilhand:
                 vilmax = winner(vilmax, evaluate(cards, deck))[1]
-
+            
             result = winner(heromax, vilmax)[0]
 
             if result == 1:
@@ -172,10 +186,16 @@ def equity(hero=[], villian=[], board=[], runs=1000, print=False):
     if not print:
         return [round(100*(herowins/runs), 2), round(100*(villianwins/runs), 2), round(100*(ties/runs), 2)]
     
-    #add formatting to capitalize face cards tens and aces before returning
-    return (f"\n\
-        Results:\n\
-        Board: {' '.join(board) if board != [] else '?????'}\n\
-        Hero ({' '.join(hero) if hero != [] else '??'}):    {100 * (herowins / runs):.1f}%\n\
-        Villain ({' '.join(villian) if villian != [] else '??'}): {100 * (villianwins / runs):.1f}%\n\
-        Ties:       {100 *(ties / runs):.1f}%")
+    return (
+    f"Results:\n"
+    f"Board: {get_formatted_cards(board) if board else '?????'}\n"
+    f"Hero ({get_formatted_cards(hero) if hero else '??'}): "
+    f"{100 * (herowins / runs):6.1f}%\n"
+    f"Villain ({get_formatted_cards(villian) if villian else '??'}): "
+    f"{100 * (villianwins / runs):6.1f}%\n"
+    f"Ties: {100 * (ties / runs):6.1f}%"
+    )
+
+
+if __name__ == '__main__':
+    print(equity(['as','kc'], print=True))

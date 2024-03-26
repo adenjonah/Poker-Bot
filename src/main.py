@@ -15,7 +15,7 @@ games = {}
 
 async def send_message(message: Message, user_message: str) -> None:
     if not user_message:
-        print('Mess empty bc no intents')
+        print('No Intents')
         return
 
     user_message = user_message.lower()
@@ -37,7 +37,7 @@ async def send_message(message: Message, user_message: str) -> None:
 
 @client.event
 async def on_ready() -> None:
-    print(f'{client.user} is now rnning!')
+    print(f'{client.user} is now running!')
 
 @client.event
 async def on_message(message: Message) -> None:

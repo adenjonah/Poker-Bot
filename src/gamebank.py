@@ -96,16 +96,16 @@ class Player:
 #tests
 if __name__ == '__main__':
     game = Game('jonah')
-    print(game.chipcount())
+    
     game.add_player('jonah', 20)
     game.add_player('josh', 30)
-    print(game.chipcount())
+    
     game.remove_player('josh', 26)
-    print(game.chipcount())
+
     game.add_player('bob', 50)
     game.rebuy('jonah', 20)
-    print(game.chipcount())
+
     game.remove_player('bob', 70)
     game.remove_player('jonah', 20)
-    print(game.balance())
-    print(game.total_buyins)
+
+    print(game.gamestatus())
