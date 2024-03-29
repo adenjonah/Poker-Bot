@@ -15,14 +15,14 @@
 Poker-Bot is a Discord bot designed to facilitate poker games, providing utilities like equity calculation, bank management, and interactive gameplay. It is built for poker enthusiasts and developers interested in poker-related bot development.
 
 ## Features
-- Equity Calculation: Computes win, loss, and tie probabilities for given hands and board states.
+- Equity Calculation: Computes win, loss, and tie probabilities for given hands and board states using Monte Carlo simulation.
 - Banker Helper: Manages player buy-ins, cashouts, and rebuys, maintaining the game's financials.
 
 ## Getting Started
 To use the Poker-Bot in your Discord server, invite the bot to your server and ensure it has the necessary permissions to read and send messages.
 
 ### Basic Commands
-- `!equity`: Calculates the equity for specified hands and board via Monte Carlo Simulation.
+- `!equity`: Calculates the equity for specified hands and board.
   - Arguments: `hero:RSRS villain:RSRS board:RSRSRSRSRS runs:INT`
     - `hero`: Hero's hand, specified as `RSRS` where `R` is the rank and `S` is the suit.
     - `villain`: Villain's hand, in the same format as the hero's hand.
