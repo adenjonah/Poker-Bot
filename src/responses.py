@@ -11,6 +11,7 @@ def is_float(string):
         return False
 
 def add(game: Game, content) -> str:
+    errormsg = '\n'
     if is_float(content[0]):
         buyin = float(content[0])
         for player in content[1:]:
@@ -21,8 +22,11 @@ def add(game: Game, content) -> str:
         if match:
             name = match.group(1)
             buyin = float(match.group(2))
+        if game.players.get(name, 0):
+            errormsg += f'{name} is already in the game, add chips to them with !rebuy'
+            continue
         game.add_player(name, buyin)
-    return game.gamestatus()
+    return game.gamestatus() + errormsg
 
 def cashout(game: Game, content) -> str:
     if is_float(content[0]):
@@ -86,7 +90,7 @@ def get_response(user_input: str, username: str, games: dict=None) -> str:
             elif item.startswith('board:'):
                 board = [item.replace('board:', '')[i:i+2] for i in range(0, len(item.replace('board:', '')), 2)]
             elif item.startswith('runs:'):
-                runs = int(item.replace('runs:', ''))
+                runs = min(int(item.replace('runs:', '')), 100000)
         print(f'h: {hero}, v: {villain}, b: {board} r: {runs}')
         return equity(hero, villain, board, runs, print=True)
        
