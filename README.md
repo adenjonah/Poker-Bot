@@ -23,6 +23,7 @@ To use the Poker-Bot in your Discord server, invite the bot to your server and e
 
 ### Basic Commands
 - `!equity`: Calculates the equity for specified hands and board.
+- **Note** all args are optional and if not included the equity will take the hand/board/card as an unknown when calculating equity.
   - Arguments: `hero:RSRS villain:RSRS board:RSRSRSRSRS runs:INT`
     - `hero`: Hero's hand, specified as `RSRS` where `R` is the rank (2-9,T,J,Q,K,A) and `S` is the suit (s,c,h,d).
     - `villain`: Villain's hand, in the same format as the hero's hand.
