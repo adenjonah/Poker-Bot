@@ -1,8 +1,7 @@
 import unittest
-from classes import *
+from equity import *
 
 class TestDeck(unittest.TestCase):
-
     def setUp(self):
         self.deck = Deck()
 
@@ -13,20 +12,27 @@ class TestDeck(unittest.TestCase):
         self.deck.shuffle()
         self.assertEqual(len(self.deck.cards), 52)
 
-    def test_draw(self):
+    def test_draw_and_count(self):
         drawn = self.deck.draw(5)
         self.assertEqual(len(drawn), 5)
         self.assertEqual(len(self.deck.cards), 47)
+        self.assertEqual(self.deck.count(), 52)
+
+    def test_draw_and_shuffle(self):
+        drawn = self.deck.draw(5)
+        self.assertEqual(len(drawn), 5)
+        self.assertEqual(len(self.deck.cards), 47)
+        self.deck.shuffle()
+        self.assertEqual(len(self.deck.cards), 52)
 
     def test_draw_with_invalid_number_raises_error(self):
         with self.assertRaises(ValueError):
             self.deck.draw(0)
-
-    def test_draw_more_than_deck_size_raises_error(self):
         with self.assertRaises(ValueError):
-            self.deck.draw(53)
+            self.deck.draw(53)        
 
     def test_reset(self):
+        self.deck.takeout(['as'])
         self.deck.draw(5)
         self.deck.reset()
         self.assertEqual(len(self.deck.cards), 52)
@@ -61,13 +67,28 @@ class TestDeck(unittest.TestCase):
 
 class TestPokerFunctions(unittest.TestCase):
 
-    def test_evaluate_straight_flush(self):
-        hand = ['6s', '7s', '8s', '9s', 'ts']
-        result = evaluate(hand, Deck())
-        self.assertEqual(result[0], 9)  # 9 represents a Straight Flush
+    def test_evaluate_hand_ranks(self):
+        hand = ['6s', '7s', '8s', '9s', 'ts'] #straight flush
+        self.assertEqual(evaluate(hand, Deck())[0], 9)  # 9 represents a Straight Flush
+        hand = ['6s', '6c', '6d', '6h', 'ts'] #quads
+        self.assertEqual(evaluate(hand, Deck())[0], 8)
+        hand = ['6s', '6h', 'ah', 'ac', 'ad'] #boat
+        self.assertEqual(evaluate(hand, Deck())[0], 7)
+        hand = ['6s', '2s', '8s', '9s', 'ts'] #flush
+        self.assertEqual(evaluate(hand, Deck())[0], 6)
+        hand = ['6s', '7h', '8s', '9s', 'ts'] #straight
+        self.assertEqual(evaluate(hand, Deck())[0], 5)
+        hand = ['6s', '8h', '8s', '8d', 'ts'] #trips
+        self.assertEqual(evaluate(hand, Deck())[0], 4)
+        hand = ['6s', '6h', '8s', '8c', 'ts'] #two pair
+        self.assertEqual(evaluate(hand, Deck())[0], 3)
+        hand = ['6s', '7s', '8s', 'tc', 'ts'] #one pair
+        self.assertEqual(evaluate(hand, Deck())[0], 2)
+        hand = ['6s', '7s', '8s', '9s', 'ad'] #high card
+        self.assertEqual(evaluate(hand, Deck())[0], 1)
 
     def test_winner(self):
-        hand1 = evaluate(['6s', '7s', '8s', '9s', 'ts'], Deck())
+        hand1 = evaluate(['6c', '7c', '8c', '9c', 'tc'], Deck())
         hand2 = evaluate(['4s', '5s', '6s', '7s', '8s'], Deck())
         result = winner(hand1, hand2)
         self.assertEqual(result[0], 1)  # Hand1 wins
@@ -76,7 +97,7 @@ class TestPokerFunctions(unittest.TestCase):
         hero = ['as', 'ks']
         villain = ['qd', 'qh']
         board = ['2s', '3s', '4s']
-        result = equity(hero, villain, board, runs=1000)
+        result = equity(hero, villain, board, runs=100)
         # No specific assertion here due to randomness, but you could check result structure
         self.assertEqual(len(result), 3)  # Ensures we get hero win, villain win, and tie percentages
 

@@ -4,10 +4,10 @@ class Game:
 
     def __init__(self, host: str):
         self.host = host
-        self.players = {}
-        self.money_on_table = 0
-        self.total_buyins = 0
-        self.total_cashouts = 0
+        self.players: dict[str, Player] = {}
+        self.money_on_table = 0.0
+        self.total_buyins = 0.0
+        self.total_cashouts = 0.0
     
     def add_player(self, name: str, buyin: float):
         self.players[name] = Player(name, buyin)
@@ -44,14 +44,14 @@ class Game:
         for keyname in self.players:
             player = self.players[keyname]
             if player.cashed:
-                statusUpdate += f'{player.name.capitalize()} was in for ${player.in_for()} & cashed for ${player.cashoutchips} \n               (net: {"+" if (player.owed > 0) else ""}${player.owed}) {"Paid!" if player.paid else "Unpaid :("}\n'
+                statusUpdate += f'{player.name.capitalize()} was in for {round(player.in_for(), 2)} & cashed for {round(player.cashoutchips, 2)} \n               (net: {"+" if (player.owed > 0) else ""}{player.owed}) {"Paid!" if player.paid else "Unpaid :("}\n'
             else:
-                statusUpdate += f'{player.name.capitalize()} is in for ${player.in_for()}\n'
+                statusUpdate += f'{player.name.capitalize()} is in for {round(player.in_for(), 2)}\n'
                 over = False
-        statusUpdate += f'\nMoney on Table: ${self.money_on_table}\n\n'
+        statusUpdate += f'\nMoney on Table: {round(self.money_on_table, 2)}\n\n'
 
         if over:
-            statusUpdate += f'Game is over, all players are cashed out\nBanker balance is ${self.money_on_table}'
+            statusUpdate += f'Game is over, all players are cashed out\nBanker balance is {round(self.money_on_table, 2)}'
         return statusUpdate
 
 
@@ -71,7 +71,6 @@ class Player:
         return self.buyin + self.rebuys
     
     def rebuy(self, rebuy: float):
-        round(rebuy, 2)
         if self.rebuys:
             self.rebuys += rebuy
         else:
@@ -81,17 +80,17 @@ class Player:
     
     def cashout(self, chips: float):
         self.cashoutchips = chips
-        self.owed = round(self.cashoutchips - self.in_for(), 2)
+        self.owed = self.cashoutchips - self.in_for()
         self.history.append(-chips)
         self.cashed = True
-        return (round(self.owed, 2))
+        return self.owed
     
     def pay(self):
         self.paid = True
     
     def __str__(self):
         if self.cashoutchips:
-            return f"Player: {self.name} was in for ${self.in_for()} and cashed out for ${self.cashoutchips}, netting {self.owed} dollars, here is their history: {self.history}"
+            return f"Player: {self.name} was in for {self.in_for()} and cashed out for {self.cashoutchips}, netting {self.owed} dollars, here is their history: {self.history}"
 
 #tests
 if __name__ == '__main__':

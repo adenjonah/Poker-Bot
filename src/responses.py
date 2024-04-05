@@ -1,5 +1,6 @@
 from random import choice, randint
-from classes import *
+from typing import Any
+from equity import *
 from gamebank import *
 import re
 
@@ -62,11 +63,10 @@ def rebuy(game: Game, content) -> str:
 
 def paying(game: Game, content) -> str:
     for player in content:
-        print(player)
         game.player_paid(player)
     return game.gamestatus()
 
-def get_response(user_input: str, username: str, games: dict=None) -> str:
+def get_response(user_input: str, username: str, games: dict[Any, Any]) -> str:
     tokens = user_input.split(' ')
     command = tokens[0]
     content = tokens[1:]
@@ -81,7 +81,6 @@ def get_response(user_input: str, username: str, games: dict=None) -> str:
         villain = []
         board = []
         runs = 10000
-        print(content)
         for item in content:
             if item.startswith('hero:'):
                 hero = [item.replace('hero:', '')[i:i+2] for i in range(0, len(item.replace('hero:', '')), 2)]
@@ -91,7 +90,6 @@ def get_response(user_input: str, username: str, games: dict=None) -> str:
                 board = [item.replace('board:', '')[i:i+2] for i in range(0, len(item.replace('board:', '')), 2)]
             elif item.startswith('runs:'):
                 runs = min(int(item.replace('runs:', '')), 100000)
-        print(f'h: {hero}, v: {villain}, b: {board} r: {runs}')
         return equity(hero, villain, board, runs, print=True)
        
     elif command == 'startgame':
@@ -133,9 +131,9 @@ def get_response(user_input: str, username: str, games: dict=None) -> str:
 
 
 if __name__ == '__main__':
-    games = {}
-    print(get_response('equity heroAsAd villain7sAc runs100', 'adenj'))
-    print(get_response('equity heroAsAd villain7sAc boardAh7c7h7d2d runs100', 'adenj'))
+    games: dict[str, Game] = {}
+    print(get_response('equity heroAsAd villain7sAc runs100', 'adenj', games))
+    print(get_response('equity heroAsAd villain7sAc boardAh7c7h7d2d runs100', 'adenj', games))
 
 
     

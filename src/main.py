@@ -1,17 +1,17 @@
-from typing import Final
+from typing import Any, Final
 import os
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
 from responses import get_response
 
 load_dotenv()
-TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
+TOKEN: Final[str] = os.getenv('DISCORD_TOKEN', 'None')
 
 intents: Intents = Intents.default()
 intents.message_content = True
 client: Client = Client(intents=intents)
 keyword = '!'
-games = {}
+games: dict[str, Any] = {}
 
 async def send_message(message: Message, user_message: str) -> None:
     if not user_message:
