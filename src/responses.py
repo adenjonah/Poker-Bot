@@ -4,67 +4,7 @@ from equity import *
 from gamebank import *
 import re
 
-def is_float(string):
-    try:
-        float(string)
-        return True
-    except ValueError:
-        return False
 
-def add(game: Game, content) -> str:
-    errormsg = '\n'
-    if is_float(content[0]):
-        buyin = float(content[0])
-        for player in content[1:]:
-            game.add_player(player, buyin)
-        return game.gamestatus()
-    for player in content:
-        match = re.match(r'([a-zA-Z]+)(\d+)', player)
-        if match:
-            name = match.group(1)
-            buyin = float(match.group(2))
-        if game.players.get(name, 0):
-            errormsg += f'{name} is already in the game, add chips to them with !rebuy'
-            continue
-        game.add_player(name, buyin)
-    return game.gamestatus() + errormsg
-
-def cashout(game: Game, content) -> str:
-    if is_float(content[0]):
-        cashoutchips = float(content[0])
-        for player in content[1:]:
-            game.remove_player(player, cashoutchips)
-        return game.gamestatus()
-    for player in content:
-        match = re.match(r'([a-zA-Z]+)(\d+(\.\d+)?)', player)
-        if match:
-            name = match.group(1)
-            cashoutchips = float(match.group(2))
-        game.remove_player(name, cashoutchips)
-    return game.gamestatus()
-
-def rebuy(game: Game, content) -> str:
-    errors = ''
-    if is_float(content[0]):
-        rebuy = float(content[0])
-        for player in content[1:]:
-            game.rebuy(player, rebuy)
-        return game.gamestatus()
-    for player in content:
-        match = re.match(r'([a-zA-Z]+)(\d+)', player)
-        if match:
-            name = match.group(1)
-            rebuy = float(match.group(2))
-        if game.players[name].cashed:
-            errors += f'Errors:\n{name.capitalize()} already cashed, add them using a new name with !add\n'
-            continue
-        game.rebuy(name, rebuy)
-    return game.gamestatus() + '\n\n' + errors
-
-def paying(game: Game, content) -> str:
-    for player in content:
-        game.player_paid(player)
-    return game.gamestatus()
 
 def get_response(user_input: str, username: str, games: dict[Any, Any]) -> str:
     tokens = user_input.split(' ')
