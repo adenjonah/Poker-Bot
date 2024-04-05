@@ -44,7 +44,7 @@ class Game:
         for keyname in self.players:
             player = self.players[keyname]
             if player.cashed:
-                statusUpdate += f'{player.name.capitalize()} was in for {round(player.in_for(), 2)} & cashed for {round(player.cashoutchips, 2)} \n               (net: {"+" if (player.owed > 0) else ""}{player.owed}) {"Paid!" if player.paid else "Unpaid :("}\n'
+                statusUpdate += f'{player.name.capitalize()} was in for {round(player.in_for(), 2)} & cashed for {round(player.cashoutchips, 2)} \n               (net: {"+" if (player.owed > 0) else ""}{round(player.owed, 2)}) {"Paid!" if player.paid else "Unpaid :("}\n'
             else:
                 statusUpdate += f'{player.name.capitalize()} is in for {round(player.in_for(), 2)}\n'
                 over = False
