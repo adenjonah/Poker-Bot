@@ -66,14 +66,22 @@ def get_response(user_input: str, username: str, games: dict[Any, Any]) -> str:
         except KeyError:
             return "User has no game running, start a game with !startgame"
         return paying(game, content)
+    
+    elif command == 'edit':
+        try:
+            game = games[username]
+        except KeyError:
+            return "User has no game running, start a game with !startgame"
+        return edit(game, content)
 
     raise NotImplementedError(f"missing code for command '{command}' with prefix '{command[:7]}'")
 
 
 if __name__ == '__main__':
     games: dict[str, Game] = {}
-    print(get_response('equity heroAsAd villain7sAc runs100', 'adenj', games))
-    print(get_response('equity heroAsAd villain7sAc boardAh7c7h7d2d runs100', 'adenj', games))
+    print(get_response('startgame 20 jonah bob', 'adenj', games))
+    print(get_response('cashout 20 jonah', 'adenj', games))
+    print(get_response('cashout 10 jonah', 'adenj', games))
 
 
     
