@@ -119,6 +119,7 @@ def add(game: Game, content) -> str:
     return game.gamestatus() + errormsg
 
 def cashout(game: Game, content) -> str:
+    errors = ''
     if is_float(content[0]):
         cashoutchips = float(content[0])
         for player in content[1:]:
@@ -128,9 +129,12 @@ def cashout(game: Game, content) -> str:
         match = re.match(r'([a-zA-Z]+)(\d+(\.\d+)?)', player)
         if match:
             name = match.group(1)
-            cashoutchips = float(match.group(2))
-        game.remove_player(name, cashoutchips)
-    return game.gamestatus()
+            if game.players[name].cashed:
+                errors += f'{name} already cashed\n'
+            else:
+                cashoutchips = float(match.group(2))
+                game.remove_player(name, cashoutchips)
+    return game.gamestatus() + errors
 
 def rebuy(game: Game, content) -> str:
     errors = ''
