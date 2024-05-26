@@ -1,0 +1,17 @@
+.
+├── Procfile
+├── README.md
+├── python-getting-started
+├── requirements.txt
+├── src
+│   ├── equity.py
+│   ├── gamebank.py
+│   ├── main.py
+│   ├── responses.py
+│   └── tests
+│       ├── __init__.py
+│       ├── responses_test.py
+│       └── test_classes.py
+└── structure.txt
+
+4 directories, 11 files
