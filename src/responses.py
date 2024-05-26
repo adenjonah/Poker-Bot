@@ -1,5 +1,6 @@
 from random import choice, randint
 from typing import Any
+
 from equity import *
 from gamebank import *
 import re

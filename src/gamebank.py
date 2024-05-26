@@ -34,6 +34,9 @@ class Game:
         bankererror = (self.total_cashouts)
         return -bankererror
     
+    # def edit(self, name: str, rebuy: float):
+    #     pass
+    
     def gamestatus(self):
         statusUpdate = f'-----------------\n'
         statusUpdate += f'|GAME DETAILS|\n'
@@ -153,6 +156,9 @@ def rebuy(game: Game, content) -> str:
             continue
         game.rebuy(name, rebuy)
     return game.gamestatus() + '\n\n' + errors
+
+def edit(game: Game, content) -> str:
+    pass
 
 def paying(game: Game, content) -> str:
     for player in content:
