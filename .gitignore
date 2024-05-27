@@ -4,3 +4,5 @@ __pycache__/classes.cpython-311.pyc
 __pycache__/responses.cpython-311.pyc
 *.pyc
 .env
+/.pokerVenv
+/venv

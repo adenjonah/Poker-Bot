@@ -1,8 +1,8 @@
 from random import choice, randint
 from typing import Any
+import pokerFunctions
 
-from equity import *
-from gamebank import *
+from pokerFunctions.gamebank import *
 import re
 
 
