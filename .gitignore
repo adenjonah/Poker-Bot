@@ -6,3 +6,4 @@ __pycache__/responses.cpython-311.pyc
 .env
 /.pokerVenv
 /venv
+.DS_Store
